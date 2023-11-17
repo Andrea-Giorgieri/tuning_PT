@@ -31,7 +31,7 @@ void readinput(char *in_file, TParam *param);
 void init_arrays(double **acc, double **err_acc, TParam const * const param);
 void read_acceptances(double *acc, double *err_acc, TParam const * const param);
 void print_acceptances(double *acc, double *err_acc, TParam const * const param);
-void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, double *err_acc, TParam const * const param);
+void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, TParam const * const param);
 void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * const param);
 
 #endif

@@ -31,7 +31,7 @@ void real_main(char *in_file)
 		print_acceptances(acc, err_acc, &param);
 		
 		// calculate new PT parameters
-		tune_pt_parameters(&N_replica, &tuned_coeff, acc, err_acc, &param);
+		tune_pt_parameters(&N_replica, &tuned_coeff, acc, &param);
 		
 		// write new PT parameters
 		print_tuned_parameters(N_replica, tuned_coeff, &param);

@@ -104,7 +104,6 @@ void readinput(char *in_file, TParam *param)
 	double temp_d;
 	int temp_i, i;
 	int err, end=1;
-	unsigned int temp_ui;
 
 	// initialize to avoid mistakes
 	param->d_N_replica_pt=1;
@@ -358,7 +357,7 @@ void read_acceptances(double *acc, double *err_acc, TParam const * const param)
 		remove_white_line_and_comments(fp);
 		for(r=0;r<((param->d_N_replica_pt)-1);r++)
 			{			
-			err=fscanf(fp, "%*d %*d %*lf %*lf %lf %lf %*ld %*ld\n", &(acc[r]), &(err_acc[r]));
+			err=fscanf(fp, "%*d %*d %*f %*f %lf %lf %*d %*d\n", &(acc[r]), &(err_acc[r]));
 			if(err!=2)
 				{
 				fprintf(stderr, "Error in reading the file %s (%s, %d)\n", param->d_swap_acc_file, __FILE__, __LINE__);
@@ -396,7 +395,7 @@ void print_acceptances(double *acc, double *err_acc, TParam const * const param)
 	}
 
 // calculate the new PT parameters
-void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, double *err_acc, TParam const * const param)
+void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, TParam const * const param)
 	{
 	int i, sgn, err;
 	double acc_mean, acc_std, acc_target_delta, coeff_diff, aux_a, aux_b;
