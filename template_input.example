@@ -1,0 +1,10 @@
+#file names
+simulation_input_file input
+tuning_output_file    tuned_parameters.dat
+tuning_analysis_file  tuning_acc.dat
+
+#tuning parameters
+target_acceptance 30.0
+target_tolerance   1.0
+target_std         1.0
+tuning_step_coeff  0.1
