@@ -1,8 +1,46 @@
-*****************************************************************************************************
-************ PROGRAM TO TUNE PARALLEL TEMPERING PARAMETERS IN YANG_MILLS_PTBC/LS PACKAGES ***********
-*****************************************************************************************************
+***********************************************************************
+************ PROGRAM TO TUNE PARALLEL TEMPERING PARAMETERS ************
+************      IN YANG_MILLS_PTBC/LS PACKAGES           ************
+***********************************************************************
 
-C program to tune the Parallel-Tempering parameters for Monte Carlo simulations with the packages 
-yang_mills_PTBC and yang_mills_PTLS.
+C program to tune the Parallel Tempering parameters for Monte Carlo 	
+simulations with the packages yang_mills_PTBC and yang_mills_PTLS.
 
+* INPUT FILE
 
+  A template input file is generated calling the executable without the
+  input file. In the input file, everything following # up to carriage
+  return is interpreted as a comment.
+  
+  The "simulation_input_file" is assumed to contain two lines:
+  
+    N_replica_pt N C_0 C_1 ... C_{N-1}
+    swap_acc_file swap_acc_file_name
+  
+  where N is the number of PT replicas and C_r the corresponding
+  coefficients (measures performed on replica 0), swap_acc_file_name is
+  the output file containing the acceptances resulting from the
+  simulation with "simulation_input_file" as input.
+
+* PARAMETERS AND ALGORITHM
+
+  The program tunes N and C_r to obtain average acceptance across swaps
+ 
+    acc_mean = target_acceptance +- target_tolerance
+    acc_std <= target_std
+  
+  Acceptances are expressed as %.
+  N is increased/decreased by one at a time if acc_mean is below/above
+  the target. Otherwise C_r are changed, with C_0 and C_{N-1} fixed, to
+  make all acceptances closer to acc_mean:
+  
+    diff(r,r+1) -> diff(r,r+1) + k*(acc(r,r+i)-acc_mean)/100
+  
+  where diff(r,r+1) = (C_{r+1} - C_r) and
+  
+    k = tuning_step_coeff*(C_{N-1}-C_0)/N
+
+  such that abs(diff(r,r+1)) decreases/increases if acc(r,r+i) is 
+  lower/higher than acc_mean. "tuning_step_coeff" should be chosen O(1)
+  and decreased if the algorithm doesn't converge or increased if it
+  does too slowly.

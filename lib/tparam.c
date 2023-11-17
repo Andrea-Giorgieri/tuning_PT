@@ -12,7 +12,7 @@
 
 // remove from input file white/empty lines and comments
 // comments start with the charachter #
-void remove_white_line_and_comments_tuning(FILE *input)
+void remove_white_line_and_comments(FILE *input)
 	{
 	int temp_i;
 
@@ -46,7 +46,7 @@ void remove_white_line_and_comments_tuning(FILE *input)
 		ungetc(temp_i, input);
 		}
 
-	remove_white_line_and_comments_tuning(input);
+	remove_white_line_and_comments(input);
 	}
 	else
 	{
@@ -54,7 +54,9 @@ void remove_white_line_and_comments_tuning(FILE *input)
 	}
 	}
 
-void copy_white_line_and_comments_tuning(FILE *input, FILE *output)
+// copy white/empty lines and comments from input file to output file
+// comments start with the charachter #
+void copy_white_line_and_comments(FILE *input, FILE *output)
 	{
 	int temp_i;
 
@@ -86,7 +88,7 @@ void copy_white_line_and_comments_tuning(FILE *input, FILE *output)
 			ungetc(temp_i, input);
 			}
 
-		copy_white_line_and_comments_tuning(input, output);
+		copy_white_line_and_comments(input, output);
 		}
 	else
 		{
@@ -94,7 +96,8 @@ void copy_white_line_and_comments_tuning(FILE *input, FILE *output)
 		}
 	}
 
-void readinput_tuning(char *in_file, TParam *param)
+// read input file and write parameters to param
+void readinput(char *in_file, TParam *param)
 	{
 	FILE *input;
 	char str[STD_STRING_LENGTH], temp_str[STD_STRING_LENGTH];
@@ -103,7 +106,7 @@ void readinput_tuning(char *in_file, TParam *param)
 	int err, end=1;
 	unsigned int temp_ui;
 
-	// just to avoid possible mistakes with uninitialized stuff
+	// initialize to avoid mistakes
 	param->d_N_replica_pt=1;
 
 	input=fopen(in_file, "r"); // open the input file
@@ -116,7 +119,7 @@ void readinput_tuning(char *in_file, TParam *param)
 		{
 		while(end==1) // slide the file
 			{
-			remove_white_line_and_comments_tuning(input);
+			remove_white_line_and_comments(input);
 			
 			err=fscanf(input, "%s", str);
 			if(err!=1)
@@ -203,17 +206,6 @@ void readinput_tuning(char *in_file, TParam *param)
 						}
 					strcpy(param->d_simulation_file, temp_str);
 					}
-			
-			else if(strncmp(str, "tuning_output_file", 18)==0)
-					{
-					err=fscanf(input, "%s", temp_str);
-					if(err!=1)
-						{
-						fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
-					strcpy(param->d_output_file, temp_str);
-					}
 
 			else if(strncmp(str, "tuning_analysis_file", 20)==0)
 					{
@@ -232,7 +224,7 @@ void readinput_tuning(char *in_file, TParam *param)
 				exit(EXIT_FAILURE);
 				}
 			
-			remove_white_line_and_comments_tuning(input);
+			remove_white_line_and_comments(input);
 
 			// check if the read line is the last one
 			temp_i=getc(input);
@@ -254,7 +246,7 @@ void readinput_tuning(char *in_file, TParam *param)
 			{
 			while(end==1) // slide the file
 				{
-				remove_white_line_and_comments_tuning(input);
+				remove_white_line_and_comments(input);
 			
 				err=fscanf(input, "%s", str);
 				if(err!=1)
@@ -306,7 +298,7 @@ void readinput_tuning(char *in_file, TParam *param)
 					strcpy(param->d_swap_acc_file, temp_str);
 					}
 				
-				remove_white_line_and_comments_tuning(input);
+				remove_white_line_and_comments(input);
 
 				// check if the read line is the last one
 				temp_i=getc(input);
@@ -319,8 +311,9 @@ void readinput_tuning(char *in_file, TParam *param)
 			}
 		}
 	}
-	
-void init_arrays_tuning(double **acc, double **err_acc, TParam const * const param)
+
+// allocate arrays for saving acceptances
+void init_arrays(double **acc, double **err_acc, TParam const * const param)
 	{
 	int i, err;
 	
@@ -353,7 +346,8 @@ void init_arrays_tuning(double **acc, double **err_acc, TParam const * const par
 		}
 	}
 
-void read_acceptances_tuning(double *acc, double *err_acc, TParam const * const param)
+// read acceptances from swap_acc file and save them
+void read_acceptances(double *acc, double *err_acc, TParam const * const param)
 	{	
 	int r, err;
 	FILE *fp;
@@ -361,7 +355,7 @@ void read_acceptances_tuning(double *acc, double *err_acc, TParam const * const 
 	fp=fopen(param->d_swap_acc_file, "r");
 	if(fp!=NULL) // file exists -> read acceptances
 		{
-		remove_white_line_and_comments_tuning(fp);
+		remove_white_line_and_comments(fp);
 		for(r=0;r<((param->d_N_replica_pt)-1);r++)
 			{			
 			err=fscanf(fp, "%*d %*d %*lf %*lf %lf %lf %*ld %*ld\n", &(acc[r]), &(err_acc[r]));
@@ -375,7 +369,8 @@ void read_acceptances_tuning(double *acc, double *err_acc, TParam const * const 
 		}
 	}
 
-void print_acceptances_tuning(double *acc, double *err_acc, TParam const * const param)
+// print old acceptances for later analysis
+void print_acceptances(double *acc, double *err_acc, TParam const * const param)
 	{
 	int i;
 	FILE *fp;
@@ -400,6 +395,7 @@ void print_acceptances_tuning(double *acc, double *err_acc, TParam const * const
 	fclose(fp);
 	}
 
+// calculate the new PT parameters
 void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, double *err_acc, TParam const * const param)
 	{
 	int i, sgn, err;
@@ -407,7 +403,7 @@ void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, doubl
 	
 	acc_mean = 0.0;
 	acc_std = 0.0;
-	for(i=0; i<(param->d_N_replica_pt-1); i++) 
+	for(i=0; i<(param->d_N_replica_pt-1); i++) // calculate meand and std of acceptances
 		{
 		acc_mean += acc[i];
 		acc_std += acc[i]*acc[i];
@@ -417,11 +413,12 @@ void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, doubl
 	
 	acc_target_delta = acc_mean-param->d_target_acc;
 	
+	// if acc_mean is outide the tolerance range, adjust N_replica accordingly
 	if(fabs(acc_target_delta) > param->d_target_tolerance && acc_std < param->d_target_std)
 		{
 		sgn = 1;
 		if(acc_target_delta < 0.0) sgn = -1;
-		*N_replica = param->d_N_replica_pt - sgn;
+		*N_replica = param->d_N_replica_pt - sgn; //N_replica increased/decreased by 1 if acc_mean </> target_acc
 		
 		err=posix_memalign( (void **) tuned_coeff, (size_t) DOUBLE_ALIGN, (size_t) (*N_replica) * sizeof(double));
 		if(err!=0)
@@ -430,6 +427,8 @@ void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, doubl
 			exit(EXIT_FAILURE);
 			}
 		
+		// new replica coefficients are linear interpolation of old ones,
+		// keeping first and last fixed
 		(*tuned_coeff)[0] = param->d_pt_replica_coeff[0];
 		for(i=1; i<(*N_replica-1); i++)
 			{
@@ -439,6 +438,8 @@ void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, doubl
 			}
 		(*tuned_coeff)[*N_replica-1] = param->d_pt_replica_coeff[param->d_N_replica_pt-1];
 		}
+	
+	// if acc_mean is inside the tolerance range, adjust the replica coefficients
 	else
 		{
 		*N_replica = param->d_N_replica_pt;
@@ -450,6 +451,9 @@ void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, doubl
 			exit(EXIT_FAILURE);
 			}
 		
+		// coeff_diff(r,r+1) -> coeff_diff(r,r+1) + aux_a*(a(r,r+1)-<a>) : 
+		// distance between coefficients of two replicas decreased/increased if their acc is lower/higher than acc_mean,
+		// first and last coefficients fixed
 		(*tuned_coeff)[0] = param->d_pt_replica_coeff[0];
 		coeff_diff = 0.0;
 		aux_a = param->d_tuning_k*(param->d_pt_replica_coeff[*N_replica-1]-param->d_pt_replica_coeff[0])/(*N_replica);
@@ -462,6 +466,7 @@ void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, doubl
 		}
 	}
 
+// to print tuned parameters to output_file insted of simulation_file
 /*void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * const param)
 	{
 	int i;
@@ -478,6 +483,7 @@ void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, doubl
 	}
 */
 
+// edit simulation_file with the new PT parameters
 void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * const param)
 	{
 	int i, temp_i, err, end=1;
@@ -485,7 +491,7 @@ void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * c
 	char name[STD_STRING_LENGTH], str[STD_STRING_LENGTH];
 	FILE *fp, *fp_tmp;
 	
-	//open simulation file and tmp copy
+	//open simulation file and a tmp copy
 	fp=fopen(param->d_simulation_file, "r");
 	if(fp==NULL)
 		{
@@ -494,11 +500,22 @@ void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * c
 		}
 	strcpy(name, param->d_simulation_file);
 	strcat(name, "_tmp");
+	fp_tmp=fopen(name, "r");
+	i=0;
+	while(fp_tmp!=NULL) //change tmp name if file exists
+		{
+		fclose(fp_tmp);
+		strcpy(name, param->d_simulation_file);
+		sprintf(str, "_tmp_%d", i);
+		strcat(name,  str);
+		fp_tmp=fopen(name, "r");
+		i++;
+		}
 	fp_tmp=fopen(name, "w");
 	
-	while(end==1) //slide the file
+	while(end==1) //slide the files
 		{
-		copy_white_line_and_comments_tuning(fp, fp_tmp);
+		copy_white_line_and_comments(fp, fp_tmp);
 		err=fscanf(fp, "%s", str);
 		if(err!=1)
 			{
@@ -506,7 +523,7 @@ void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * c
 			exit(EXIT_FAILURE);
 			}
 		
-		//copy the file replacing pt parameters following "N_replica_pt"
+		//copy the file replacing PT parameters following "N_replica_pt"
 		fprintf(fp_tmp, str);
 		if(strncmp(str, "N_replica_pt", 12)==0)
 			{
@@ -516,7 +533,7 @@ void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * c
 				fprintf(stderr, "Error in reading the file %s (%s, %d)\n", param->d_simulation_file, __FILE__, __LINE__);
 				exit(EXIT_FAILURE);
 				}
-			fprintf(fp_tmp, " %d ", N_replica); //write on new file
+			fprintf(fp_tmp, " %d", N_replica); //write on new file
 			
 			for(i=0;i<param->d_N_replica_pt;i++) //advance on old file
 				{
@@ -530,10 +547,11 @@ void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * c
 			
 			for(i=0;i<N_replica;i++) //write on new file
 				{
-				fprintf(fp_tmp, "%lf ", tuned_coeff[i]);
+				fprintf(fp_tmp, " %lf", tuned_coeff[i]);
 				}
 			}
-		copy_white_line_and_comments_tuning(fp, fp_tmp);
+		copy_white_line_and_comments(fp, fp_tmp);
+		
 		// check if the read line is the last one
 		temp_i=getc(fp);
 		if(temp_i==EOF) end=0;
@@ -542,12 +560,16 @@ void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * c
 	
 	fclose(fp);
 	fclose(fp_tmp);
+	
+	// remove the old file
 	err = remove(param->d_simulation_file);
 	if(err!=0)
 		{
 		fprintf(stderr, "Error in removing the file %s\n", param->d_simulation_file);
 		exit(EXIT_FAILURE);
 		}
+		
+	// rename the tmp file as the old file
 	err = rename(name, param->d_simulation_file);
 	if(err!=0)
 		{

@@ -17,18 +17,18 @@ void real_main(char *in_file)
 	double *acc, *err_acc, *tuned_coeff;
 
     // read tuning input file
-    readinput_tuning(in_file, &param);
+    readinput(in_file, &param);
 	
 	if (param.d_N_replica_pt>1)
 		{
 		// init acceptances array
-		init_arrays_tuning(&acc, &err_acc, &param);
+		init_arrays(&acc, &err_acc, &param);
 		
 		// read swap acceptances
-		read_acceptances_tuning(acc, err_acc, &param);
+		read_acceptances(acc, err_acc, &param);
 		
 		// print acceptances before tuning
-		print_acceptances_tuning(acc, err_acc, &param);
+		print_acceptances(acc, err_acc, &param);
 		
 		// calculate new PT parameters
 		tune_pt_parameters(&N_replica, &tuned_coeff, acc, err_acc, &param);
@@ -66,14 +66,13 @@ void print_template_input(void)
 	else
 	{
 		fprintf(fp,"#file names\n");
-		fprintf(fp,"simulation_input_file input\n");
-		fprintf(fp,"tuning_output_file    tuned_parameters.dat\n");
+		fprintf(fp,"simulation_input_file template_input\n");
 		fprintf(fp,"tuning_analysis_file  tuning_acc.dat\n");
 		fprintf(fp,"\n#tuning parameters\n");
 		fprintf(fp,"target_acceptance 30.0\n");
 		fprintf(fp,"target_tolerance   1.0\n");
 		fprintf(fp,"target_std         1.0\n");
-		fprintf(fp,"tuning_step_coeff  0.1\n");
+		fprintf(fp,"tuning_step_coeff  1.0\n");
 		fclose(fp);
     }
 	}
