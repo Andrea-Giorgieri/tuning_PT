@@ -8,10 +8,13 @@ if [ -d lib/.deps ]; then make clean; fi
 module load intel
 
 # optimized configuration for Marconi (optimized compilation with Intel compiler on Intel Skylake processors)
-./configure CC=icc CFLAGS='-O3 -axCORE-AVX512 -mtune=skylake -ip -ipo' #LIBS="-ldl -lz -lc"
+#./configure CC=icc CFLAGS='-O3 -axCORE-AVX512 -mtune=skylake -ip -ipo' LIBS="-ldl -lz -lc"
 
 # optimized configuration for Marconi (optimized compilation with Intel compiler on Intel Icelake processors)
-#./configure CC=icc CFLAGS='-O3 -axCORE-AVX512 -mtune=icelake -ip -ipo' #LIBS="-ldl -lz -lc"
+#./configure CC=icc CFLAGS='-O3 -axCORE-AVX512 -mtune=icelake -ip -ipo' LIBS="-ldl -lz -lc"
+
+# optimized compilation with gcc
+./configure CC=gcc CFLAGS='-O3' LIBS="-ldl -lz -lc"
 
 # compile
 make ${compile_targets} -j 18
