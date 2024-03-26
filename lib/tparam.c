@@ -128,94 +128,94 @@ void readinput(char *in_file, TParam *param)
 			}
 
 			if(strncmp(str, "target_acceptance", 17)==0)
+				{
+				err=fscanf(input, "%lf", &temp_d);
+				if(err!=1)
 					{
-					err=fscanf(input, "%lf", &temp_d);
-					if(err!=1)
-						{
-						fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
-					
-					if(temp_d >= 0 && temp_d <= 100) param->d_target_acc=temp_d;
-					else
-						{	
-						fprintf(stderr, "Error: target_acceptance must be between 0 and 100 in %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
+					fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
 					}
+					
+				if(temp_d >= 0 && temp_d <= 100) param->d_target_acc=temp_d;
+				else
+					{	
+					fprintf(stderr, "Error: target_acceptance must be between 0 and 100 in %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
+					}
+				}
 			
 			else if(strncmp(str, "target_tolerance", 16)==0)
+				{
+				err=fscanf(input, "%lf", &temp_d);
+				if(err!=1)
 					{
-					err=fscanf(input, "%lf", &temp_d);
-					if(err!=1)
-						{
-						fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
-					
-					if(temp_d > 0) param->d_target_tolerance=temp_d;
-					else
-						{	
-						fprintf(stderr, "Error: target_tolerance must be positive in %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
+					fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
 					}
+					
+				if(temp_d > 0) param->d_target_tolerance=temp_d;
+				else
+					{	
+					fprintf(stderr, "Error: target_tolerance must be positive in %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
+					}
+				}
 			
 			else if(strncmp(str, "target_std", 10)==0)
+				{
+				err=fscanf(input, "%lf", &temp_d);
+				if(err!=1)
 					{
-					err=fscanf(input, "%lf", &temp_d);
-					if(err!=1)
-						{
-						fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
-					
-					if(temp_d > 0) param->d_target_std=temp_d;
-					else
-						{	
-						fprintf(stderr, "Error: target_std must be positive in %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
+					fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
 					}
+					
+				if(temp_d > 0) param->d_target_std=temp_d;
+				else
+					{	
+					fprintf(stderr, "Error: target_std must be positive in %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
+					}
+				}
 					
 			else if(strncmp(str, "tuning_step_coeff", 17)==0)
+				{
+				err=fscanf(input, "%lf", &temp_d);
+				if(err!=1)
 					{
-					err=fscanf(input, "%lf", &temp_d);
-					if(err!=1)
-						{
-						fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
-					
-					if(temp_d > 0) param->d_tuning_k=temp_d;
-					else
-						{	
-						fprintf(stderr, "Error: tuning_step_coeff must be positive in %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
+					fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
 					}
+					
+				if(temp_d > 0) param->d_tuning_k=temp_d;
+				else
+					{	
+					fprintf(stderr, "Error: tuning_step_coeff must be positive in %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
+					}
+				}
 			
 			else if(strncmp(str, "simulation_input_file", 21)==0)
+				{
+				err=fscanf(input, "%s", temp_str);
+				if(err!=1)
 					{
-					err=fscanf(input, "%s", temp_str);
-					if(err!=1)
-						{
-						fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
-					strcpy(param->d_simulation_file, temp_str);
+					fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
 					}
+				strcpy(param->d_simulation_file, temp_str);
+				}
 
 			else if(strncmp(str, "tuning_analysis_file", 20)==0)
+				{
+				err=fscanf(input, "%s", temp_str);
+				if(err!=1)
 					{
-					err=fscanf(input, "%s", temp_str);
-					if(err!=1)
-						{
-						fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-						exit(EXIT_FAILURE);
-						}
-					strcpy(param->d_analysis_file, temp_str);
+					fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+					exit(EXIT_FAILURE);
 					}
+				strcpy(param->d_analysis_file, temp_str);
+				}
 			
 			else
 				{
@@ -410,7 +410,7 @@ void tune_pt_parameters(int *N_replica, double **tuned_coeff, double *acc, TPara
 	acc_mean = acc_mean/(param->d_N_replica_pt-1);
 	acc_std = sqrt(acc_std/(param->d_N_replica_pt-1) - acc_mean*acc_mean);
 	
-	acc_target_delta = acc_mean-param->d_target_acc;
+	acc_target_delta = acc_mean - param->d_target_acc;
 	
 	// if acc_mean is outide the tolerance range, adjust N_replica accordingly
 	if(fabs(acc_target_delta) > param->d_target_tolerance && acc_std < param->d_target_std)
@@ -532,11 +532,11 @@ void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * c
 				fprintf(stderr, "Error in reading the file %s (%s, %d)\n", param->d_simulation_file, __FILE__, __LINE__);
 				exit(EXIT_FAILURE);
 				}
-			fprintf(fp_tmp, " %d", N_replica); //write on new file
+			fprintf(fp_tmp, " %d ", N_replica); //write on new file
 			
 			for(i=0;i<param->d_N_replica_pt;i++) //advance on old file
 				{
-				err=fscanf(fp, "%lf", &temp_d);
+				err=fscanf(fp, "%lf ", &temp_d);
 				if(err!=1)
 					{
 					fprintf(stderr, "Error in reading the file %s (%s, %d)\n", param->d_simulation_file, __FILE__, __LINE__);
@@ -546,7 +546,7 @@ void print_tuned_parameters(int N_replica, double *tuned_coeff, TParam const * c
 			
 			for(i=0;i<N_replica;i++) //write on new file
 				{
-				fprintf(fp_tmp, " %lf", tuned_coeff[i]);
+				fprintf(fp_tmp, "%lf ", tuned_coeff[i]);
 				}
 			}
 		copy_white_line_and_comments(fp, fp_tmp);
